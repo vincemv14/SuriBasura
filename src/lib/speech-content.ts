@@ -1,48 +1,48 @@
 import { TrashCategory } from "./categories";
 
 /**
- * Filipino speech content for the 5R results.
- * Written in conversational, kid-friendly Tagalog.
+ * English speech content for text-to-voice (clearer for kids to understand via AI voice).
+ * The on-screen text is in Filipino, but the voice reads in English for clarity.
  */
 
 export const SPEECH_INTRO: Record<TrashCategory, string> = {
   "plastic bottle":
-    "Ang na-detect ay isang plastic bottle! Ito ang mga pwede mong gawin:",
+    "The item detected is a plastic bottle! Here's what you can do:",
   "plastic wrapper/sachet":
-    "Ang na-detect ay isang plastic wrapper o sachet! Ito ang mga pwede mong gawin:",
+    "The item detected is a plastic wrapper or sachet! Here's what you can do:",
   "paper/cardboard":
-    "Ang na-detect ay papel o cardboard! Ito ang mga pwede mong gawin:",
+    "The item detected is paper or cardboard! Here's what you can do:",
   glass:
-    "Ang na-detect ay isang baso o garapon! Ito ang mga pwede mong gawin:",
+    "The item detected is glass! Here's what you can do:",
   "metal/can":
-    "Ang na-detect ay metal o lata! Ito ang mga pwede mong gawin:",
+    "The item detected is a metal can! Here's what you can do:",
   "e-waste":
-    "Ang na-detect ay e-waste o sirang electronic! Ito ang mga pwede mong gawin:",
+    "The item detected is electronic waste! Here's what you can do:",
   "organic/food waste":
-    "Ang na-detect ay organic o food waste! Ito ang mga pwede mong gawin:",
+    "The item detected is organic or food waste! Here's what you can do:",
   styrofoam:
-    "Ang na-detect ay styrofoam! Ito ang mga pwede mong gawin:",
+    "The item detected is styrofoam! Here's what you can do:",
   other:
-    "Hindi masyadong malinaw ang item na ito. Ito ang mga general na pwede mong gawin:",
+    "The item is not clearly identified. Here are some general tips:",
 };
 
 export const SPEECH_BEST_ACTION: Record<TrashCategory, string> = {
   "plastic bottle":
-    "Ang pinakamainam na gawin ay mag-Reduce. Gumamit ng reusable na bote para hindi na kailangan ang single-use plastic.",
+    "The best action is to Reduce. Use a reusable water bottle so you don't need single-use plastic anymore.",
   "plastic wrapper/sachet":
-    "Ang pinakamainam na gawin ay mag-Reduce. Bumili ng refill o bulk para mabawasan ang sachet na ginagamit.",
+    "The best action is to Reduce. Buy refills or in bulk instead of single-serve sachets.",
   "paper/cardboard":
-    "Ang pinakamainam na gawin ay mag-Recycle. Panatilihing tuyo at dalhin sa junk shop o MRF.",
+    "The best action is to Recycle. Keep it dry and bring it to the junk shop or recycling center.",
   glass:
-    "Ang pinakamainam na gawin ay mag-Reuse. Hugasan at gamitin ulit bilang storage o dekorasyon.",
+    "The best action is to Reuse. Wash it and use it again as storage, a drinking glass, or decoration.",
   "metal/can":
-    "Ang pinakamainam na gawin ay mag-Recycle. Ang metal ay may value pa. Dalhin sa junk shop.",
+    "The best action is to Recycle. Metal cans have value. Bring them to the junk shop.",
   "e-waste":
-    "Ang pinakamainam na gawin ay mag-Repair. Karamihan ng electronics ay kaya pang ayusin ng technician.",
+    "The best action is to Repair. Most electronics can still be fixed by a local technician.",
   "organic/food waste":
-    "Ang pinakamainam na gawin ay mag-Recover. I-compost ito para maging pataba ng lupa.",
+    "The best action is to Recover. Compost it! It turns into rich soil in just a few weeks.",
   styrofoam:
-    "Ang pinakamainam na gawin ay mag-Reduce. Ang styrofoam ay halos hindi mare-recycle dito sa Pilipinas. Iwasan ito, magdala ng sariling container.",
+    "The best action is to Reduce. Styrofoam cannot be recycled here in the Philippines. Avoid it by bringing your own container.",
   other:
-    "Ang pinakamainam na gawin ay mag-Reduce. Isipin muna bago bumili kung talagang kailangan.",
+    "The best action is to Reduce. Think before buying — do you really need it?",
 };

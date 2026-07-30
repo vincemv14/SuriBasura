@@ -3,7 +3,7 @@
  * Uses the browser's built-in Web Speech API.
  */
 
-export function speak(text: string, lang: string = "fil-PH") {
+export function speak(text: string, lang: string = "en-US") {
   if (typeof window === "undefined" || !window.speechSynthesis) return;
 
   // Cancel any ongoing speech
@@ -11,24 +11,17 @@ export function speak(text: string, lang: string = "fil-PH") {
 
   const utterance = new SpeechSynthesisUtterance(text);
   utterance.lang = lang;
-  utterance.rate = 0.9; // Slightly slower for kids
+  utterance.rate = 0.85; // Slightly slower for kids
   utterance.pitch = 1.1; // Slightly higher pitch for friendliness
 
-  // Try to find a Filipino voice, fall back to default
+  // Use English voice for clarity
   const voices = window.speechSynthesis.getVoices();
-  const filipinoVoice = voices.find(
-    (v) =>
-      v.lang.startsWith("fil") ||
-      v.lang.startsWith("tl") ||
-      v.name.toLowerCase().includes("filipino") ||
-      v.name.toLowerCase().includes("tagalog")
-  );
+  const englishVoice = voices.find(
+    (v) => v.lang.startsWith("en") && v.name.toLowerCase().includes("female")
+  ) || voices.find((v) => v.lang.startsWith("en"));
 
-  if (filipinoVoice) {
-    utterance.voice = filipinoVoice;
-  } else {
-    // Fallback: try any Southeast Asian language or just use default
-    utterance.lang = "en-PH"; // English Philippines accent as fallback
+  if (englishVoice) {
+    utterance.voice = englishVoice;
   }
 
   window.speechSynthesis.speak(utterance);

@@ -46,120 +46,120 @@ export const CATEGORY_EMOJI: Record<TrashCategory, string> = {
 export const FIVE_R_DATA: Record<TrashCategory, FiveRRecommendation> = {
   "plastic bottle": {
     reduce:
-      "Bring a reusable water bottle or tumbler. One reusable bottle replaces hundreds of single-use PET bottles per year.",
+      "Magdala ng reusable na bote o tumbler. Isang reusable bottle ang pumapalit sa daan-daang single-use plastic bottles bawat taon.",
     reuse:
-      "Clean it and use as a plant pot, pencil holder, or refill it with drinking water from a purified source a few more times before retiring it.",
+      "Linisin at gamitin bilang paso, lalagyan ng lapis, o lagyan ulit ng tubig mula sa purified source bago itapon.",
     recover:
-      "PET bottles have value — collect them and bring to a junk shop. They are melted into polyester fiber for clothing and bags.",
+      "Ang PET bottles ay may halaga — kolektahin at dalhin sa junk shop. Natutunaw ito para gawing polyester fiber para sa damit at bag.",
     recycle:
-      "Flatten and cap it, then drop off at the barangay MRF or nearest junk shop. [PLACEHOLDER: Add Liliw-specific drop-off location]",
+      "I-flatten at takpan, tapos dalhin sa barangay MRF o pinakamalapit na junk shop. [I-update: Lagyan ng Liliw drop-off location]",
     repair: null,
     bestAction: "reduce",
-    bestActionSummary: "Switch to a reusable bottle to cut this waste at the source.",
+    bestActionSummary: "Gumamit ng reusable na bote para mawala ang basura na ito sa simula pa lang.",
   },
   "plastic wrapper/sachet": {
     reduce:
-      "Buy in bulk (tingi refill stations) instead of single-serve sachets. One refill replaces 30+ sachets per month.",
+      "Bumili ng refill o sa tingi refill stations kaysa single-serve sachets. Isang refill ang pumapalit sa 30+ sachets bawat buwan.",
     reuse:
-      "Hard to reuse food-grade — but clean sachets can be woven into bags or mats by community eco-brick programs.",
+      "Mahirap i-reuse ang food-grade sachets — pero ang malilinis na sachet ay pwedeng gawing bag o banig sa mga eco-brick programs.",
     recover:
-      "Some cement kilns accept sachet waste as fuel (co-processing). Check if your LGU has a collection program for this.",
+      "May mga cement kilns na tumatanggap ng sachet waste bilang fuel (co-processing). Alamin kung may collection program ang LGU mo.",
     recycle:
-      "Most MRFs cannot recycle multilayer sachets. Segregate them separately. [PLACEHOLDER: Add Liliw-specific sachet collection partner if available]",
+      "Karamihan ng MRF ay hindi ma-recycle ang multilayer sachets. I-segregate nang hiwalay. [I-update: Lagyan ng Liliw sachet collection partner]",
     repair: null,
     bestAction: "reduce",
-    bestActionSummary: "Sachets are nearly impossible to recycle. Avoid them — buy refills instead.",
+    bestActionSummary: "Ang sachets ay halos imposibleng i-recycle. Iwasan — bumili ng refill na lang.",
   },
   "paper/cardboard": {
     reduce:
-      "Go digital for receipts & notes. Reuse paper bags. Opt out of unnecessary flyers and packaging.",
+      "Mag-digital na para sa resibo at notes. I-reuse ang paper bags. Tanggihan ang hindi kailangan na flyers at packaging.",
     reuse:
-      "Use the blank side for notes or kids' drawing paper. Cardboard boxes become storage or craft projects.",
+      "Gamitin ang blangkong side para sa notes o drawing ng mga bata. Ang cardboard boxes ay nagiging storage o craft projects.",
     recover:
-      "Compost uncoated paper — it breaks down in 2–6 weeks and enriches soil.",
+      "I-compost ang uncoated paper — nababreak down ito sa 2-6 na linggo at nagpapayaman ng lupa.",
     recycle:
-      "Keep it dry and flatten it. Paper/cardboard is one of the easiest materials to recycle. Bring to any junk shop or MRF. [PLACEHOLDER: Add Liliw junk shop address]",
+      "Panatilihing tuyo at i-flatten. Paper/cardboard ang isa sa pinakamadaling i-recycle. Dalhin sa junk shop o MRF. [I-update: Lagyan ng Liliw junk shop address]",
     repair: null,
     bestAction: "recycle",
-    bestActionSummary: "Paper is easy to recycle — keep it dry and bring it to the junk shop.",
+    bestActionSummary: "Madaling i-recycle ang papel — panatilihing tuyo at dalhin sa junk shop.",
   },
   glass: {
     reduce:
-      "Choose products in refillable glass containers or buy from sari-sari stores that accept bottle returns.",
+      "Pumili ng mga produktong nasa refillable glass containers o bumili mula sa tindahan na tumatanggap ng bottle returns.",
     reuse:
-      "Glass jars are perfect for food storage, drinking glasses, candle holders, or terrariums. Wash and reuse indefinitely.",
+      "Ang glass jars ay perpekto para sa food storage, baso, candle holder, o terrarium. Hugasan at gamitin nang paulit-ulit.",
     recover:
-      "Crushed glass (cullet) can be used in construction as aggregate. Some LGUs collect it for this purpose.",
+      "Ang dinurog na glass (cullet) ay pwedeng gamitin sa construction bilang aggregate. May mga LGU na kumolekta nito.",
     recycle:
-      "Glass is infinitely recyclable. Bring clean bottles to the junk shop or MRF. Separate by color if required. [PLACEHOLDER: Add Liliw glass collection point]",
+      "Ang glass ay infinitely recyclable. Dalhin ang malinis na bottles sa junk shop o MRF. I-separate ayon sa kulay kung kailangan. [I-update: Lagyan ng Liliw glass collection point]",
     repair: null,
     bestAction: "reuse",
-    bestActionSummary: "Glass lasts forever — wash it and reuse as storage or decor.",
+    bestActionSummary: "Ang glass ay tumatagal nang forever — hugasan at gamitin ulit bilang storage o dekorasyon.",
   },
   "metal/can": {
     reduce:
-      "Use a reusable lunchbox instead of canned goods where possible. Cook fresh when you can.",
+      "Gumamit ng reusable na lunch box kaysa canned goods kung pwede. Magluto ng fresh kung kaya.",
     reuse:
-      "Tin cans become planters, pen holders, lanterns, or storage containers. Sand edges smooth first for safety.",
+      "Ang tin cans ay nagiging planters, pen holders, lanterns, o storage containers. Pakinisin ang edges para safe.",
     recover:
-      "Metals have high scrap value. Aluminum cans are especially valuable — a kilo of cans fetches ₱40–80 at junk shops.",
+      "Ang metals ay mataas ang scrap value. Ang aluminum cans ay sobrang valuable — isang kilo ng cans ay ₱40-80 sa junk shops.",
     recycle:
-      "Rinse, flatten, and bring to a junk shop. Aluminum and tin are endlessly recyclable. [PLACEHOLDER: Add nearest Liliw junk shop buying metals]",
-    repair: "Dented metal items (pots, tools, utensils) can often be hammered back into shape or re-welded cheaply at a local repair shop.",
+      "Banlawan, i-flatten, at dalhin sa junk shop. Ang aluminum at tin ay endlessly recyclable. [I-update: Lagyan ng pinakamalapit na Liliw junk shop]",
+    repair: "Ang mga dented na metal items (kaldero, tools, kutsara) ay kadalasang kaya pang i-hammer back o i-weld sa local repair shop.",
     bestAction: "recycle",
-    bestActionSummary: "Metals are valuable and infinitely recyclable — sell them to a junk shop.",
+    bestActionSummary: "Ang metals ay may value at infinitely recyclable — ibenta sa junk shop.",
   },
   "e-waste": {
     reduce:
-      "Take care of electronics so they last longer — use cases, surge protectors, and keep firmware updated.",
+      "Alagaan ang electronics para mas tumagal — gumamit ng cases, surge protectors, at i-update ang firmware.",
     reuse:
-      "If it still works, donate or sell to someone who can use it. Old phones become security cameras, music players, or kids' learning tools.",
+      "Kung gumagana pa, i-donate o ibenta sa pwedeng gumamit. Ang lumang phones ay nagiging security camera, music player, o learning tool ng mga bata.",
     recover:
-      "E-waste contains precious metals (gold, copper, palladium). Certified recyclers extract these safely.",
+      "Ang e-waste ay may precious metals (gold, copper, palladium). Ang certified recyclers ang nagbubunot nito nang ligtas.",
     recycle:
-      "NEVER burn e-waste — toxic fumes. Bring to a DENR-accredited e-waste collector or LGU collection drive. [PLACEHOLDER: Add Liliw/Laguna e-waste collection events]",
-    repair: "Most electronics can be repaired — phone screen replacements, battery swaps, charging port fixes. Check with local technicians before discarding.",
+      "HUWAG sunugin ang e-waste — nakakalason ang usok. Dalhin sa DENR-accredited e-waste collector o LGU collection drive. [I-update: Lagyan ng Liliw/Laguna e-waste events]",
+    repair: "Karamihan ng electronics ay kaya pang ayusin — screen replacement, battery swap, charging port fix. Tanungin muna ang local technician bago itapon.",
     bestAction: "repair",
-    bestActionSummary: "Try repair first — most electronics can be fixed affordably by a local technician.",
+    bestActionSummary: "Subukan munang i-repair — karamihan ng electronics ay kaya pang ayusin ng local technician.",
   },
   "organic/food waste": {
     reduce:
-      "Plan meals, store food properly, and eat leftovers first. The best food waste is the kind that never happens.",
+      "Mag-plano ng meals, i-store nang maayos ang pagkain, at unahin kainin ang mga tira. Ang pinakamainam na food waste ay yung hindi nangyari.",
     reuse:
-      "Vegetable scraps become broth. Stale bread becomes breadcrumbs. Overripe bananas make great kakanin or banana bread.",
+      "Ang vegetable scraps ay nagiging sabaw. Ang stale bread ay nagiging breadcrumbs. Ang overripe na saging ay pwedeng gawing kakanin o banana bread.",
     recover:
-      "Compost it! Organic waste breaks down into rich soil in 4–8 weeks. Even a small bin on a balcony works.",
+      "I-compost ito! Ang organic waste ay nababreak down at nagiging mayamang lupa sa 4-8 linggo. Kahit maliit na bin sa balcony ay pwede.",
     recycle:
-      "Not recyclable in the traditional sense, but community composting programs turn it into garden soil. [PLACEHOLDER: Liliw composting program contact]",
+      "Hindi ito recyclable sa traditional na paraan, pero ang community composting programs ay ginagawa itong garden soil. [I-update: Lagyan ng Liliw composting program contact]",
     repair: null,
     bestAction: "recover",
-    bestActionSummary: "Compost it — organic waste becomes rich soil in just a few weeks.",
+    bestActionSummary: "I-compost ito — ang organic waste ay nagiging mayamang lupa sa ilang linggo lang.",
   },
   styrofoam: {
     reduce:
-      "Bring your own containers (BYOC) for takeout. Refuse styrofoam packaging when you can choose alternatives.",
+      "Magdala ng sariling containers (BYOC) para sa takeout. Tanggihan ang styrofoam packaging kung may alternatibo.",
     reuse:
-      "Clean styrofoam containers can be used for seedling trays or paint palettes, but they degrade quickly.",
+      "Ang malinis na styrofoam containers ay pwedeng gamitin para sa seedling trays o paint palettes, pero mabilis masira.",
     recover:
-      "Some specialized facilities densify styrofoam into blocks for reuse. Very few exist in PH currently.",
+      "May ilang specialized facilities na nag-d-densify ng styrofoam para i-reuse. Kakaunti pa sa Pilipinas.",
     recycle:
-      "Styrofoam is technically recyclable but almost no facility in the Philippines accepts it. Segregate it and advocate for bans. [PLACEHOLDER: Check if Liliw has styrofoam ban ordinance]",
+      "Ang styrofoam ay technically recyclable pero halos walang facility sa Pilipinas ang tumatanggap nito. I-segregate at ipaglaban ang ban. [I-update: Check kung may Liliw styrofoam ban ordinance]",
     repair: null,
     bestAction: "reduce",
-    bestActionSummary: "Styrofoam can't realistically be recycled here — avoid it entirely by bringing your own container.",
+    bestActionSummary: "Ang styrofoam ay hindi talaga mare-recycle dito — iwasan ito sa pamamagitan ng pagdadala ng sariling container.",
   },
   other: {
     reduce:
-      "Think before buying: do you really need it? Choosing products with less packaging reduces waste at the source.",
+      "Mag-isip muna bago bumili: kailangan mo ba talaga? Ang pagpili ng produktong may kaunting packaging ay nakakabawas ng basura.",
     reuse:
-      "Get creative — many items have a second life as craft materials, organizers, or donation items.",
+      "Maging malikhain — maraming items ang may second life bilang craft materials, organizers, o donation items.",
     recover:
-      "Check if the item has material value (metal parts, usable components) that a junk shop or repair shop would take.",
+      "Tingnan kung may material value ang item (metal parts, usable components) na tatanggapin ng junk shop o repair shop.",
     recycle:
-      "If you're unsure, ask your barangay MRF or local junk shop what they accept. [PLACEHOLDER: Liliw MRF contact number]",
-    repair: "If the item is broken but fixable, try a local repair shop before discarding.",
+      "Kung hindi sigurado, tanungin ang barangay MRF o local junk shop kung ano ang tinatanggap nila. [I-update: Lagyan ng Liliw MRF contact number]",
+    repair: "Kung sira pero pwede pang ayusin, subukan muna sa local repair shop bago itapon.",
     bestAction: "reduce",
-    bestActionSummary: "When in doubt, the best action is to reduce — avoid creating this waste next time.",
+    bestActionSummary: "Kapag hindi sigurado, ang pinakamainam na gawin ay mag-reduce — iwasan ang paggawa ng ganitong basura sa susunod.",
   },
 };
 

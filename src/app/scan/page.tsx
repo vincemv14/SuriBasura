@@ -7,8 +7,6 @@ import { compressImage } from "@/lib/compress-image";
 import {
   FIVE_R_DATA,
   TrashCategory,
-  CATEGORIES,
-  CATEGORY_EMOJI,
   searchCategories,
   CategoryInfo,
 } from "@/lib/categories";
@@ -243,7 +241,7 @@ export default function ScanPage() {
                 onClick={() => navigateToResult("other")}
                 className="mt-3 text-sm text-green-600 underline"
               >
-                Gamitin ang "Other" category →
+                Gamitin ang &quot;Other&quot; category →
               </button>
             </div>
           )}

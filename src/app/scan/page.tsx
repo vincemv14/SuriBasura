@@ -7,8 +7,10 @@ import { compressImage } from "@/lib/compress-image";
 import {
   FIVE_R_DATA,
   TrashCategory,
-  VALID_CATEGORIES,
+  CATEGORIES,
   CATEGORY_EMOJI,
+  searchCategories,
+  CategoryInfo,
 } from "@/lib/categories";
 
 function mapCategoryToR(category: TrashCategory): string {
@@ -16,60 +18,17 @@ function mapCategoryToR(category: TrashCategory): string {
   return data?.bestAction || "reduce";
 }
 
-type CaptureMode = "camera" | "upload" | null;
-
 export default function ScanPage() {
   const router = useRouter();
-  const videoRef = useRef<HTMLVideoElement>(null);
-  const canvasRef = useRef<HTMLCanvasElement>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
-  const streamRef = useRef<MediaStream | null>(null);
 
-  const [mode, setMode] = useState<CaptureMode>(null);
   const [capturedImage, setCapturedImage] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [cameraError, setCameraError] = useState<string | null>(null);
-  const [showManualPicker, setShowManualPicker] = useState(false);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [showCategories, setShowCategories] = useState(true);
 
   const s = strings.scan;
-
-  const startCamera = useCallback(async () => {
-    setMode("camera");
-    setCameraError(null);
-    try {
-      const stream = await navigator.mediaDevices.getUserMedia({
-        video: { facingMode: "environment", width: { ideal: 1280 }, height: { ideal: 960 } },
-      });
-      streamRef.current = stream;
-      if (videoRef.current) {
-        videoRef.current.srcObject = stream;
-      }
-    } catch {
-      setCameraError(s.errorCamera);
-    }
-  }, [s.errorCamera]);
-
-  const stopCamera = useCallback(() => {
-    if (streamRef.current) {
-      streamRef.current.getTracks().forEach((track) => track.stop());
-      streamRef.current = null;
-    }
-  }, []);
-
-  const capturePhoto = useCallback(() => {
-    if (!videoRef.current || !canvasRef.current) return;
-    const video = videoRef.current;
-    const canvas = canvasRef.current;
-    canvas.width = video.videoWidth;
-    canvas.height = video.videoHeight;
-    const ctx = canvas.getContext("2d");
-    if (!ctx) return;
-    ctx.drawImage(video, 0, 0);
-    const dataUrl = canvas.toDataURL("image/jpeg", 0.8);
-    setCapturedImage(dataUrl);
-    stopCamera();
-  }, [stopCamera]);
 
   const handleFileUpload = useCallback(
     (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -86,27 +45,19 @@ export default function ScanPage() {
       const reader = new FileReader();
       reader.onloadend = () => {
         setCapturedImage(reader.result as string);
-        setMode("upload");
+        setShowCategories(false);
       };
       reader.readAsDataURL(file);
     },
     []
   );
 
-  const reset = useCallback(() => {
-    setCapturedImage(null);
-    setError(null);
-    setMode(null);
-    setShowManualPicker(false);
-    stopCamera();
-  }, [stopCamera]);
-
   const navigateToResult = useCallback(
     (category: TrashCategory) => {
       const recommendedR = mapCategoryToR(category);
 
       // Save to DB (non-blocking)
-      if (capturedImage) {
+      if (capturedImage && capturedImage !== "none") {
         fetch("/api/scan", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
@@ -122,7 +73,7 @@ export default function ScanPage() {
         "suri-result",
         JSON.stringify({
           category,
-          image: capturedImage,
+          image: capturedImage || "",
           timestamp: new Date().toISOString(),
         })
       );
@@ -131,16 +82,13 @@ export default function ScanPage() {
     [capturedImage, router]
   );
 
-  const classify = useCallback(async () => {
+  const classifyWithAI = useCallback(async () => {
     if (!capturedImage) return;
     setIsLoading(true);
     setError(null);
-    setShowManualPicker(false);
 
     try {
-      // Compress image before sending to API (reduces from ~5MB to ~50-100KB)
       const compressed = await compressImage(capturedImage, 512);
-
       const res = await fetch("/api/classify", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -148,16 +96,16 @@ export default function ScanPage() {
       });
 
       if (res.status === 429) {
-        setError(strings.errors.rateLimit);
-        setShowManualPicker(true);
+        setError(strings.errors.rateLimit + " Pumili na lang ng category sa baba.");
+        setShowCategories(true);
         setIsLoading(false);
         return;
       }
 
       if (!res.ok) {
         const data = await res.json();
-        setError(data.error || s.errorClassify);
-        setShowManualPicker(true);
+        setError((data.error || s.errorClassify) + " Pumili na lang ng category sa baba.");
+        setShowCategories(true);
         setIsLoading(false);
         return;
       }
@@ -165,33 +113,29 @@ export default function ScanPage() {
       const data = await res.json();
       navigateToResult(data.category);
     } catch {
-      setError(strings.errors.network);
-      setShowManualPicker(true);
+      setError(strings.errors.network + " Pumili na lang ng category sa baba.");
+      setShowCategories(true);
       setIsLoading(false);
     }
   }, [capturedImage, navigateToResult, s.errorClassify]);
 
+  const filteredCategories: CategoryInfo[] = searchCategories(searchQuery);
+
   return (
-    <div className="flex flex-col gap-6 animate-fade-in">
+    <div className="flex flex-col gap-5 animate-fade-in">
       <div className="text-center">
         <h2 className="text-2xl font-bold text-green-800">{s.title}</h2>
         <p className="text-sm text-gray-500 mt-1">{s.subtitle}</p>
       </div>
 
-      {/* Capture Options */}
-      {!capturedImage && !mode && (
-        <div className="flex flex-col gap-3 animate-slide-up">
-          <button
-            onClick={startCamera}
-            className="flex items-center justify-center gap-3 rounded-xl bg-green-600 px-6 py-4 text-white font-semibold shadow-md transition hover:bg-green-700 active:scale-95"
-          >
-            {s.cameraButton}
-          </button>
+      {/* Upload Photo Section */}
+      {!capturedImage && (
+        <div className="flex flex-col gap-3">
           <button
             onClick={() => fileInputRef.current?.click()}
-            className="flex items-center justify-center gap-3 rounded-xl border-2 border-green-300 bg-white px-6 py-4 font-semibold text-green-700 shadow-sm transition hover:border-green-500 hover:bg-green-50 active:scale-95"
+            className="flex items-center justify-center gap-3 rounded-xl bg-green-600 px-6 py-4 text-white font-semibold shadow-md transition hover:bg-green-700 active:scale-95"
           >
-            {s.uploadButton}
+            📁 Mag-upload ng Photo
           </button>
           <input
             ref={fileInputRef}
@@ -200,49 +144,22 @@ export default function ScanPage() {
             className="hidden"
             onChange={handleFileUpload}
           />
-
-          {/* Manual option — skip AI entirely */}
-          <button
-            onClick={() => { setCapturedImage("manual"); setShowManualPicker(true); }}
-            className="text-xs text-gray-400 underline mt-2"
-          >
-            Walang camera? Pumili ng category manually
-          </button>
+          <p className="text-xs text-gray-400 text-center">
+            O pumili ng category ng basura sa baba
+          </p>
         </div>
       )}
 
-      {/* Camera View */}
-      {mode === "camera" && !capturedImage && (
+      {/* Image Preview + AI Classify */}
+      {capturedImage && !showCategories && (
         <div className="flex flex-col gap-3 animate-slide-up">
-          {cameraError ? (
-            <div className="rounded-xl bg-red-50 border border-red-200 p-4 text-center text-sm text-red-700">
-              {cameraError}
-            </div>
-          ) : (
-            <>
-              <div className="relative overflow-hidden rounded-xl border-2 border-green-300 bg-black">
-                <video ref={videoRef} autoPlay playsInline muted className="w-full aspect-[4/3] object-cover" />
-                <div className="absolute inset-0 border-4 border-dashed border-white/30 rounded-xl pointer-events-none" />
-              </div>
-              <button onClick={capturePhoto} className="flex items-center justify-center gap-2 rounded-xl bg-green-600 px-6 py-4 text-white font-semibold shadow-md transition hover:bg-green-700 active:scale-95">
-                {s.captureButton}
-              </button>
-            </>
-          )}
-          <button onClick={reset} className="text-sm text-gray-500 underline">← Back</button>
-        </div>
-      )}
-
-      {/* Preview + Confirm */}
-      {capturedImage && capturedImage !== "manual" && !showManualPicker && (
-        <div className="flex flex-col gap-4 animate-slide-up">
           <div className="overflow-hidden rounded-xl border-2 border-green-300 shadow-md">
             {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img src={capturedImage} alt="Captured trash item" className="w-full aspect-[4/3] object-cover" />
+            <img src={capturedImage} alt="Captured" className="w-full h-48 object-cover" />
           </div>
 
           {error && (
-            <div className="rounded-lg bg-red-50 border border-red-200 p-3 text-sm text-red-700 text-center">
+            <div className="rounded-lg bg-amber-50 border border-amber-200 p-3 text-sm text-amber-700 text-center">
               {error}
             </div>
           )}
@@ -254,52 +171,84 @@ export default function ScanPage() {
             </div>
           ) : (
             <div className="flex gap-3">
-              <button onClick={reset} className="flex-1 rounded-xl border-2 border-gray-300 px-4 py-3 font-medium text-gray-600 transition hover:bg-gray-50 active:scale-95">
+              <button
+                onClick={() => { setCapturedImage(null); setError(null); setShowCategories(true); }}
+                className="flex-1 rounded-xl border-2 border-gray-300 px-4 py-3 font-medium text-gray-600 transition hover:bg-gray-50 active:scale-95"
+              >
                 {s.retakeButton}
               </button>
-              <button onClick={classify} className="flex-1 rounded-xl bg-green-600 px-4 py-3 font-semibold text-white shadow-md transition hover:bg-green-700 active:scale-95">
-                {s.classifyButton}
+              <button
+                onClick={classifyWithAI}
+                className="flex-1 rounded-xl bg-green-600 px-4 py-3 font-semibold text-white shadow-md transition hover:bg-green-700 active:scale-95"
+              >
+                🤖 AI Classify
               </button>
             </div>
           )}
+          <button
+            onClick={() => setShowCategories(true)}
+            className="text-sm text-green-600 underline text-center"
+          >
+            O pumili ng category manually →
+          </button>
         </div>
       )}
 
-      {/* Manual Category Picker (fallback or when API fails) */}
-      {showManualPicker && (
-        <div className="flex flex-col gap-4 animate-slide-up">
-          {capturedImage && capturedImage !== "manual" && (
-            <div className="overflow-hidden rounded-xl border-2 border-green-300 shadow-md">
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img src={capturedImage} alt="Captured trash item" className="w-full h-32 object-cover" />
-            </div>
-          )}
-
-          {error && (
-            <div className="rounded-lg bg-amber-50 border border-amber-200 p-3 text-sm text-amber-700 text-center">
-              {error} — Pumili na lang ng category manually:
-            </div>
-          )}
-
-          <p className="text-sm font-medium text-gray-700">Anong klaseng basura ito?</p>
-          <div className="grid grid-cols-2 gap-2">
-            {VALID_CATEGORIES.filter((c) => c !== "other").map((cat) => (
+      {/* Searchable Category Picker */}
+      {(showCategories || !capturedImage) && (
+        <div className="flex flex-col gap-3 animate-slide-up">
+          {/* Search Bar */}
+          <div className="relative">
+            <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400">🔍</span>
+            <input
+              type="text"
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              placeholder="Hanapin ang basura... (hal. bote, lata, papel)"
+              className="w-full rounded-xl border-2 border-green-200 bg-white pl-10 pr-4 py-3 text-sm focus:border-green-500 focus:ring-1 focus:ring-green-500 outline-none"
+            />
+            {searchQuery && (
               <button
-                key={cat}
-                onClick={() => navigateToResult(cat)}
-                className="rounded-lg border-2 border-gray-200 bg-white px-3 py-3 text-xs font-medium transition hover:border-green-400 hover:bg-green-50 active:scale-95 flex items-center gap-2"
+                onClick={() => setSearchQuery("")}
+                className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600"
               >
-                <span className="text-lg">{CATEGORY_EMOJI[cat]}</span>
-                <span className="capitalize">{cat}</span>
+                ✕
+              </button>
+            )}
+          </div>
+
+          {/* Results count */}
+          <p className="text-xs text-gray-400">
+            {filteredCategories.length} na category{searchQuery ? ` para sa "${searchQuery}"` : ""}
+          </p>
+
+          {/* Category Grid */}
+          <div className="grid grid-cols-2 gap-2 max-h-[400px] overflow-y-auto pr-1">
+            {filteredCategories.map((cat) => (
+              <button
+                key={cat.name}
+                onClick={() => navigateToResult(cat.name)}
+                className="flex items-center gap-2 rounded-xl border-2 border-gray-200 bg-white px-3 py-3 text-left text-xs font-medium transition hover:border-green-400 hover:bg-green-50 active:scale-95"
+              >
+                <span className="text-xl flex-shrink-0">{cat.emoji}</span>
+                <span className="capitalize leading-tight">{cat.name}</span>
               </button>
             ))}
           </div>
 
-          <button onClick={reset} className="text-sm text-gray-500 underline mt-2">← Bumalik</button>
+          {filteredCategories.length === 0 && (
+            <div className="text-center py-6">
+              <p className="text-gray-400 text-sm">Walang nahanap. Subukan ang ibang keyword.</p>
+              <button
+                onClick={() => navigateToResult("other")}
+                className="mt-3 text-sm text-green-600 underline"
+              >
+                Gamitin ang "Other" category →
+              </button>
+            </div>
+          )}
         </div>
       )}
-
-      <canvas ref={canvasRef} className="hidden" />
     </div>
   );
 }

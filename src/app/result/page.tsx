@@ -12,7 +12,7 @@ import {
   FiveRRecommendation,
 } from "@/lib/categories";
 import { speak, stopSpeech } from "@/lib/speech";
-import { SPEECH_INTRO, SPEECH_BEST_ACTION } from "@/lib/speech-content";
+import { getSpeechText } from "@/lib/speech-content";
 
 interface ScanResult {
   category: TrashCategory;
@@ -70,14 +70,11 @@ export default function ResultPage() {
   }, []);
 
   const handleSpeak = useCallback((category: TrashCategory) => {
-    const intro = SPEECH_INTRO[category];
-    const bestAction = SPEECH_BEST_ACTION[category];
-    const fullText = `${intro} ${bestAction}`;
-
+    const fullText = getSpeechText(category);
     setIsSpeaking(true);
     speak(fullText);
 
-    // Estimate speech duration (~120 words per minute for Filipino)
+    // Estimate speech duration
     const wordCount = fullText.split(" ").length;
     const duration = Math.max(3000, (wordCount / 2) * 1000);
     setTimeout(() => setIsSpeaking(false), duration);

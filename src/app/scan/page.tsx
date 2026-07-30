@@ -3,6 +3,7 @@
 import { useState, useRef, useCallback } from "react";
 import { useRouter } from "next/navigation";
 import { strings } from "@/lib/strings";
+import { compressImage } from "@/lib/compress-image";
 import {
   FIVE_R_DATA,
   TrashCategory,
@@ -137,10 +138,13 @@ export default function ScanPage() {
     setShowManualPicker(false);
 
     try {
+      // Compress image before sending to API (reduces from ~5MB to ~50-100KB)
+      const compressed = await compressImage(capturedImage, 512);
+
       const res = await fetch("/api/classify", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ image: capturedImage }),
+        body: JSON.stringify({ image: compressed }),
       });
 
       if (res.status === 429) {

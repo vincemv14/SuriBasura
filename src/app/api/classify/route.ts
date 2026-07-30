@@ -2,6 +2,9 @@ import { GoogleGenerativeAI } from "@google/generative-ai";
 import { NextRequest, NextResponse } from "next/server";
 import { VALID_CATEGORIES, TrashCategory } from "@/lib/categories";
 
+// Allow larger body for image uploads (up to 4MB)
+export const maxDuration = 30;
+
 const GEMINI_API_KEY = process.env.GEMINI_API_KEY;
 
 const CLASSIFICATION_PROMPT = `You are helping classify trash items at a community recycling event in the Philippines.

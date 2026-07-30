@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import { useRouter } from "next/navigation";
 import {
   TrashCategory,
@@ -11,6 +11,8 @@ import {
   R_ICONS,
   FiveRRecommendation,
 } from "@/lib/categories";
+import { speak, stopSpeech } from "@/lib/speech";
+import { SPEECH_INTRO, SPEECH_BEST_ACTION } from "@/lib/speech-content";
 
 interface ScanResult {
   category: TrashCategory;
@@ -22,6 +24,7 @@ export default function ResultPage() {
   const router = useRouter();
   const [result, setResult] = useState<ScanResult | null>(null);
   const [manualOverride, setManualOverride] = useState(false);
+  const [isSpeaking, setIsSpeaking] = useState(false);
 
   useEffect(() => {
     const stored = sessionStorage.getItem("suri-result");
@@ -46,12 +49,53 @@ export default function ResultPage() {
     }
   }, [router]);
 
+  // Auto-speak on result load
+  useEffect(() => {
+    if (result && !sessionStorage.getItem("suri-spoken")) {
+      // Small delay to let the page render first
+      const timer = setTimeout(() => {
+        handleSpeak(result.category);
+        sessionStorage.setItem("suri-spoken", "true");
+      }, 800);
+      return () => clearTimeout(timer);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [result]);
+
+  // Cleanup speech on unmount
+  useEffect(() => {
+    return () => {
+      stopSpeech();
+    };
+  }, []);
+
+  const handleSpeak = useCallback((category: TrashCategory) => {
+    const intro = SPEECH_INTRO[category];
+    const bestAction = SPEECH_BEST_ACTION[category];
+    const fullText = `${intro} ${bestAction}`;
+
+    setIsSpeaking(true);
+    speak(fullText);
+
+    // Estimate speech duration (~120 words per minute for Filipino)
+    const wordCount = fullText.split(" ").length;
+    const duration = Math.max(3000, (wordCount / 2) * 1000);
+    setTimeout(() => setIsSpeaking(false), duration);
+  }, []);
+
+  const handleStop = useCallback(() => {
+    stopSpeech();
+    setIsSpeaking(false);
+  }, []);
+
   const handleCategoryChange = (cat: TrashCategory) => {
     if (!result) return;
     const updated = { ...result, category: cat };
     setResult(updated);
     sessionStorage.setItem("suri-result", JSON.stringify(updated));
     setManualOverride(false);
+    // Speak new category
+    handleSpeak(cat);
   };
 
   if (!result) {
@@ -78,7 +122,7 @@ export default function ResultPage() {
           />
         </div>
         <div className="flex-1">
-          <p className="text-xs text-gray-400 uppercase tracking-wider">Detected item</p>
+          <p className="text-xs text-gray-400 uppercase tracking-wider">Na-detect na item</p>
           <p className="text-lg font-bold text-green-800 capitalize flex items-center gap-2">
             <span>{CATEGORY_EMOJI[result.category]}</span>
             {result.category}
@@ -87,16 +131,39 @@ export default function ResultPage() {
             onClick={() => setManualOverride(!manualOverride)}
             className="mt-1 text-xs text-green-600 underline"
           >
-            {manualOverride ? "Cancel" : "Not right? Change category"}
+            {manualOverride ? "Cancel" : "Mali? Palitan ang category"}
           </button>
         </div>
+      </div>
+
+      {/* Text-to-Speech Controls */}
+      <div className="flex gap-2">
+        <button
+          onClick={() => handleSpeak(result.category)}
+          disabled={isSpeaking}
+          className={`flex-1 flex items-center justify-center gap-2 rounded-xl border-2 px-4 py-3 text-sm font-semibold transition active:scale-95 ${
+            isSpeaking
+              ? "border-amber-400 bg-amber-50 text-amber-700"
+              : "border-green-300 bg-white text-green-700 hover:bg-green-50"
+          }`}
+        >
+          {isSpeaking ? "🔊 Nagsasalita..." : "🔊 Pakinggan"}
+        </button>
+        {isSpeaking && (
+          <button
+            onClick={handleStop}
+            className="rounded-xl border-2 border-red-300 px-4 py-3 text-sm font-semibold text-red-600 hover:bg-red-50 active:scale-95"
+          >
+            ⏹ Stop
+          </button>
+        )}
       </div>
 
       {/* Manual category override */}
       {manualOverride && (
         <div className="rounded-xl bg-white p-4 shadow-sm border border-green-100 animate-slide-up">
           <p className="text-sm font-medium text-gray-600 mb-2">
-            Pick the correct category:
+            Piliin ang tamang category:
           </p>
           <div className="grid grid-cols-2 gap-2">
             {VALID_CATEGORIES.filter((c) => c !== "other").map((cat) => (
@@ -119,7 +186,7 @@ export default function ResultPage() {
       {/* Best Action — Hero Card */}
       <div className="rounded-xl bg-green-600 p-5 text-white shadow-lg animate-slide-up">
         <p className="text-xs uppercase tracking-wider text-green-200 mb-1">
-          Best next action
+          Pinakamainam na gawin
         </p>
         <p className="text-sm font-medium flex items-center gap-2">
           <span className="text-xl">{R_ICONS[data.bestAction]}</span>
@@ -133,7 +200,7 @@ export default function ResultPage() {
       {/* 5R Recommendation Cards */}
       <div className="flex flex-col gap-3">
         <h3 className="text-sm font-bold text-gray-500 uppercase tracking-wider">
-          All 5R Options
+          Lahat ng 5R Options
         </h3>
         {rKeys.map((r) => {
           const content = data[r];
@@ -166,19 +233,21 @@ export default function ResultPage() {
       <div className="flex gap-3 mt-2">
         <button
           onClick={() => {
+            stopSpeech();
             sessionStorage.removeItem("suri-result");
             sessionStorage.removeItem("suri-result-logged");
+            sessionStorage.removeItem("suri-spoken");
             router.push("/scan");
           }}
           className="flex-1 rounded-xl bg-green-600 px-4 py-3 font-semibold text-white shadow-md transition hover:bg-green-700 active:scale-95"
         >
-          📸 Scan Another
+          📸 Mag-scan Ulit
         </button>
         <button
-          onClick={() => router.push("/impact")}
+          onClick={() => router.push("/proof")}
           className="rounded-xl border-2 border-green-300 px-4 py-3 font-medium text-green-700 transition hover:bg-green-50 active:scale-95"
         >
-          📊 Impact
+          📝 Proof
         </button>
       </div>
     </div>
